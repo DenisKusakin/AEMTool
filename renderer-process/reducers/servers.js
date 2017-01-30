@@ -13,6 +13,19 @@ const servers = (state = {items: []}, action) => {
         return {
             items: List(state.items).filterNot(value => value.id === id).toArray()
         }
+    } else if(action.type === UPDATE_SERVER_STATUS){
+        let {_id, statusCode, time} = action;
+        var itemsList = List(state.items);
+        let index = itemsList.findIndex(val => val.id === _id);
+        return {
+            items: itemsList.update(index, val => ({
+                ...val,
+                lastStatus: {
+                    status: statusCode,
+                    time
+                }
+            })).toArray()            
+        }
     }
 
     return state

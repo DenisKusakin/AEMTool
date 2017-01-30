@@ -1,0 +1,1 @@
+//module.exports.UPDATE_SERVER_STATUS = "UPDATE_SERVER_STATUS";

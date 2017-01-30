@@ -5,6 +5,15 @@ import React from "react";
 import ReactDOM from 'react-dom'
 import Root from "./renderer-process/containers/Root.dev.js";
 
-ReactDOM.render(
+//Material UI
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+const App = () => (
+  <MuiThemeProvider>
     <Root store={store}/>
+  </MuiThemeProvider>
+);
+
+ReactDOM.render(
+    <App/>
 , document.getElementById('content'));

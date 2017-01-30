@@ -1,75 +1,50 @@
 import React from 'react'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector, Form } from 'redux-form'
 import { connect } from 'react-redux'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+
+var renderTextField = props => (
+  <TextField hintText={props.label}
+    floatingLabelText={props.label}
+    errorText={props.touched && props.error}
+    {...props}
+  />
+)
+//TODO: Fix
+renderTextField = "input"
 
 var SimpleForm = (props) => {
   const { handleSubmit, pristine, reset, submitting } = props
   
   return (
-    <form onSubmit={handleSubmit(data => props.add(data))}>
-      <div>
-        <label>Name</label>
+    <Form onSubmit={handleSubmit((data) => props.add(data))}>
         <div>
-          <Field name="name" component="input" type="text" placeholder="Name"/>
+          <div>
+            <Field name="name" component={renderTextField} type="text" placeholder="Name"/>
+          </div>
+          <div>
+            <Field name="host" component={renderTextField} type="text" placeholder="Host"/>
+          </div>
+          <div>
+            <Field name="login" component={renderTextField} type="text" placeholder="Login"/>
+          </div>
+          <div>
+            <Field name="password" component={renderTextField} type="password" placeholder="Password"/>
+          </div>
+          <div>
+            <button type="submit" disabled={false}>Submit</button>
+          </div>
         </div>
-      </div>
-      <div>
-        <label>Host</label>
-        <div>
-          <Field name="host" component="input" type="text" placeholder="Host"/>
-        </div>
-      </div>
-      <div>
-        <label>Login</label>
-        <div>
-          <Field name="login" component="input" type="text" placeholder="Login"/>
-        </div>
-      </div>
-      <div>
-        <label>Password</label>
-        <div>
-          <Field name="password" component="input" type="password" placeholder="Password"/>
-        </div>
-      </div>
-      
-      <div>
-        <button type="submit" disabled={false}>Submit</button>
-      </div>
-    </form>
+    </Form>
   )
 }
 
-SimpleForm = reduxForm({
-    form: 'newServer'  // a unique identifier for this form
-})(SimpleForm)
-
-//const selector = formValueSelector('newServer');
-
 SimpleForm = connect(
-  state => ({}),
-  // dispatch => {
-  //   return {
-  //     add: ({name, host, login, password}) => {
-  //       dispatch(addServer(name, host, login, password));
-  //     }
-  //   }
-  // }
-)(SimpleForm)
-// SimpleForm = connect(
-//     state => {
-        
-//         let name = selector(state, "name");
-//         let host = selector(state, "host");
-//         let login = selector(state, "login");
-//         let password = selector(state, "password");
+    state => ({})
+)(reduxForm({
+    form: 'newServer'
+})(SimpleForm))
 
-//         return {
-//             name,
-//             host,
-//             login,
-//             password    
-//         }
-//     }
-// )(SimpleForm)
 
 module.exports = SimpleForm;

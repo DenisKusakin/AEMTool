@@ -1,0 +1,1 @@
+module.exports.serverStatus = require("./update-server.js");
