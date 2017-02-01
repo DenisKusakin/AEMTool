@@ -26,6 +26,7 @@ const rightIconMenu = ({deleteFunc, fetchBundlesFunc}) => (
     <MenuItem>Edit</MenuItem>
     <MenuItem onTouchTap={deleteFunc}>Delete</MenuItem>
     <MenuItem onTouchTap={fetchBundlesFunc}>Bundles</MenuItem>
+
   </IconMenu>
 );
 

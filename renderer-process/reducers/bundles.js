@@ -5,7 +5,8 @@ export default (state = {list: []}, action) => {
     if(action.type === ADD_BUNDLES){
         let {_id, list} = action;
         return {
-            list: List(list).toArray()
+            list: List(list).toArray(),
+            _id
         };
     }
     return state;

@@ -1,5 +1,5 @@
 const {addServer, removeServer, fetchServers, checkStatus} = remote.require("./main-process/api.js");
-const {fetchBundles} = remote.require("./main-process/services-api.js");
+const {fetchBundles, startBundle, stopBundle} = remote.require("./main-process/services-api.js");
 
 import {
     ADD_SERVER_ERROR,
@@ -11,7 +11,11 @@ import {
     SERVER_STATUS_UPDATED,
     SERVER_STATUS_UPDATE_ERROR,
     BUNDLES_FETCHED_SUCCESSFULLY,
-    BUNDLES_FETCH_ERROR
+    BUNDLES_FETCH_ERROR,
+    BUNDLE_STARTED_SUCCESSFULLY,
+    BUNDLE_STOPPED_SUCCESSFULLY,
+    BUNDLE_STOP_ERROR,
+    BUNDLE_START_ERROR
 } from "./../common/event-types.js";
 
 import broadcast from "./events-stream.js"
@@ -30,37 +34,76 @@ var decorator = (func, {resolve, reject}) => args => {
        )
 }
 
+const _addServer = decorator(addServer, {
+  resolve: NEW_SERVER_ADDED_SUCCESSFULLY,
+  reject: ADD_SERVER_ERROR
+});
+
+const _removeServer = decorator(removeServer, {
+    resolve: SERVER_REMOVED_SUCCESSFULLY,
+    reject: SERVER_REMOVE_ERROR
+});
+
+const _fetchServers = decorator(fetchServers, {
+    resolve: SERVERS_FETCHED_SUCCEFFULLY,
+    reject: SERVERS_FETCHED_ERROR
+}) ;
+
+const _checkServer = decorator(args =>
+    checkStatus(args)
+        .then(res => {
+            res._id = args._id;
+            return res;
+        })
+, {
+    resolve: SERVER_STATUS_UPDATED,
+    reject: SERVER_STATUS_UPDATE_ERROR
+});
+
+const _fetchBundles = decorator(args =>
+    fetchBundles(args)
+        .then(res => {
+            res._id = args._id;
+            return res;
+        }),
+        {
+            resolve: BUNDLES_FETCHED_SUCCESSFULLY,
+            reject: BUNDLES_FETCH_ERROR
+        });
+
+const _startBundle = decorator(args =>
+    startBundle(args)
+        .then(res => {
+            res._id = args._id;
+            return res;
+        }),
+        {
+            resolve: BUNDLE_STARTED_SUCCESSFULLY,
+            reject: BUNDLE_START_ERROR
+        }
+);
+
+const _stopBundle = decorator(args =>
+   stopBundle(args)
+       .then(res => {
+           let {_id, bundleId} = args;
+           fetchBundles(_id, bundleId);
+           res._id = _id;
+           res.bundleId = bundleId;
+           return res;
+       }),
+       {
+           resolve: BUNDLE_STOPPED_SUCCESSFULLY,
+           reject: BUNDLE_STOP_ERROR
+       }
+);
+
 export default {
-    addServer: decorator(addServer, {
-        resolve: NEW_SERVER_ADDED_SUCCESSFULLY,
-        reject: ADD_SERVER_ERROR
-    }),
-    removeServer: decorator(removeServer, {
-        resolve: SERVER_REMOVED_SUCCESSFULLY,
-        reject: SERVER_REMOVE_ERROR
-    }),
-    fetchServers: decorator(fetchServers, {
-        resolve: SERVERS_FETCHED_SUCCEFFULLY,
-        reject: SERVERS_FETCHED_ERROR
-    }),
-    checkServer: decorator(args =>
-        checkStatus(args)
-            .then(res => {
-                res._id = args._id;
-                return res;
-            })
-    , {
-        resolve: SERVER_STATUS_UPDATED,
-        reject: SERVER_STATUS_UPDATE_ERROR
-    }),
-    fetchBundles: decorator(args =>
-        fetchBundles(args)
-            .then(res => {
-                res._id = args._id;
-                return res;
-            }),
-            {
-                resolve: BUNDLES_FETCHED_SUCCESSFULLY,
-                reject: BUNDLES_FETCH_ERROR
-            })
+    addServer: _addServer,
+    removeServer: _removeServer,
+    fetchServers: _fetchServers,
+    checkServer: _checkServer,
+    fetchBundles: _fetchBundles,
+    startBundle: _startBundle,
+    stopBundle: _stopBundle
 }

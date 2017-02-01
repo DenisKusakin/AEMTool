@@ -6,5 +6,5 @@ import {SERVER_STATUS_UPDATED} from "./../../common/event-types.js"
 export default store => {
     storeListeners(store);
     serverListListeners();
-    logger(x => x !== SERVER_STATUS_UPDATED);
+    logger(x => x.type !== SERVER_STATUS_UPDATED);
 }

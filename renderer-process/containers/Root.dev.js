@@ -15,6 +15,8 @@ import {showNewServerForm, hideNewServerForm, showDrawer} from "./../actions";
 import Drawer from './Drawer.js';
 import Bundles from "./Bundles.js"
 
+import Paper from 'material-ui/Paper';
+
 fetchServers();
 
 class Root extends React.Component{
@@ -29,7 +31,7 @@ class Root extends React.Component{
           <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
             <div>
               <AppBar title="AEM Tool" onLeftIconButtonTouchTap={ () => store.dispatch(showDrawer())}/>
-              <Bundles/>
+                <Bundles/>
               <Drawer>
                 <ServerList fetchBundles={fetchBundles} removeServer={removeServer} onAddClick={() => store.dispatch(showNewServerForm())}/>
               </Drawer>
