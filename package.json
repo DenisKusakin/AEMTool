@@ -33,6 +33,7 @@
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.1.1",
     "redux-form": "^6.4.3",
+    "redux-localstorage": "^0.4.1",
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
     "request": "^2.79.0",

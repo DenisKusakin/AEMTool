@@ -4,6 +4,7 @@ import createLogger from 'redux-logger'
 import {rootReducer} from '../reducers/index.js'
 import DevTools from './../containers/DevTools.js'
 import listeners from "./../listeners"
+import persistState from 'redux-localstorage'
 
 const configureStore = preloadedState => {
   return createStore(
@@ -11,7 +12,8 @@ const configureStore = preloadedState => {
     preloadedState,
     compose(
       applyMiddleware(thunk),
-      DevTools.instrument()
+      DevTools.instrument(),
+      persistState()
     )
   )
 
