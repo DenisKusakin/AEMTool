@@ -13,7 +13,7 @@ const configureStore = preloadedState => {
     compose(
       applyMiddleware(thunk),
       DevTools.instrument(),
-      persistState()
+      //persistState()
     )
   )
 
