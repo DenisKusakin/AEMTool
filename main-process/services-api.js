@@ -33,7 +33,7 @@ const bundleAction = action => (_id, bundleId) => {
                 sluri.username = login;
                 sluri.password = password;
                 sluri.pathname = "/system/console/bundles/" + bundleId;
-                sluri.searchParams("action", action);
+                sluri.searchParams.append("action", action);
 
                 request.post(sluri.href, function (error, response, body) {
                     if(!!error || response === undefined){

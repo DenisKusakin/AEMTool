@@ -63,7 +63,7 @@ const _checkServer = decorator(args =>
 const _fetchBundles = decorator(args =>
     fetchBundles(args)
         .then(res => {
-            res._id = args._id;
+            res._id = args;
             return res;
         }),
         {
@@ -71,31 +71,40 @@ const _fetchBundles = decorator(args =>
             reject: BUNDLES_FETCH_ERROR
         });
 
-const _startBundle = decorator(args =>
-    startBundle(args)
-        .then(res => {
-            res._id = args._id;
-            return res;
-        }),
-        {
-            resolve: BUNDLE_STARTED_SUCCESSFULLY,
-            reject: BUNDLE_START_ERROR
-        }
+const _startBundle = decorator(args =>{
+        let {_id, bundleId} = args;
+            console.log(bundleId);
+            return startBundle(_id, bundleId)
+                .then(res => {
+                    console.log(args);
+                    fetchBundles(_id, bundleId);
+                    res._id = _id;
+                    res.bundleId = bundleId;
+                    return res;
+                })
+    },
+    {
+        resolve: BUNDLE_STARTED_SUCCESSFULLY,
+        reject: BUNDLE_START_ERROR
+    }
 );
 
-const _stopBundle = decorator(args =>
-   stopBundle(args)
-       .then(res => {
-           let {_id, bundleId} = args;
-           fetchBundles(_id, bundleId);
-           res._id = _id;
-           res.bundleId = bundleId;
-           return res;
-       }),
-       {
-           resolve: BUNDLE_STOPPED_SUCCESSFULLY,
-           reject: BUNDLE_STOP_ERROR
-       }
+const _stopBundle = decorator(args =>{
+        let {_id, bundleId} = args;
+        console.log(bundleId);
+        return stopBundle(_id, bundleId)
+            .then(res => {
+                console.log(args);
+                fetchBundles(_id, bundleId);
+                res._id = _id;
+                res.bundleId = bundleId;
+                 return res;
+            })
+    },
+    {
+        resolve: BUNDLE_STOPPED_SUCCESSFULLY,
+        reject: BUNDLE_STOP_ERROR
+    }
 );
 
 export default {

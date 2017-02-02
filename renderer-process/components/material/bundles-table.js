@@ -14,9 +14,9 @@ const iconByStatusCode = status => {
 export default props => {
     let getOnClickFunc = ({status, id}) => {
         if(status === 32){
-            return () => stopBundle(props._id, id);
+            return () => stopBundle({_id: props._id, bundleId: id});
         }else{
-            return () => startBundle(props._id, id);
+            return () => startBundle({_id: props.bundles._id, bundleId: id});
         }
     }
 
