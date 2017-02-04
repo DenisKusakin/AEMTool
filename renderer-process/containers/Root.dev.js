@@ -13,7 +13,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {addServer, removeServer, fetchServers, fetchBundles} from "./../api.js"; //remote.require("./main-process/api.js");
 import {showNewServerForm, hideNewServerForm, showDrawer} from "./../actions";
 import Drawer from './Drawer.js';
-import Bundles from "./Bundles.js"
+//import Bundles from "./Bundles.js"
+import SearchDialog from "./../containers/SearchDialog.js"
 
 import Paper from 'material-ui/Paper';
 
@@ -28,16 +29,16 @@ class Root extends React.Component{
     var store = this.props.store;
     return (
         <Provider store={store}>
-          <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            <div>
-              <AppBar title="AEM Tool" onLeftIconButtonTouchTap={ () => store.dispatch(showDrawer())}/>
-                <Bundles/>
-              <Drawer>
-                <ServerList fetchBundles={fetchBundles} removeServer={removeServer} onAddClick={() => store.dispatch(showNewServerForm())}/>
-              </Drawer>
-              <Form add={addServer}/>
-              <DevTools/>
-            </div>
+            <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+                <div>
+                    <AppBar title="AEM Tool" onLeftIconButtonTouchTap={ () => store.dispatch(showDrawer())}/>
+                    <SearchDialog/>
+                    <Drawer>
+                        <ServerList fetchBundles={fetchBundles} removeServer={removeServer} onAddClick={() => store.dispatch(showNewServerForm())}/>
+                    </Drawer>
+                    <Form add={addServer}/>
+                    <DevTools/>
+                </div>
             </MuiThemeProvider>
         </Provider>
     )

@@ -1,6 +1,69 @@
 const Datastore = require('nedb');
 
 const db = new Datastore({ filename: 'datafile-bundles', autoload: true });
+const serversDB = new Datastore({ filename: 'datafile-servers', autoload: true });
+
+function persistServer(doc){
+    //var doc = {name, host, login, password}
+    return new Promise((resolve, reject) => {
+        serversDB.insert(doc, function (err, newDoc) {
+            if(err){
+                reject();
+                return;
+            }
+            resolve(newDoc);
+        });
+    });
+}
+
+function getServer(_id){
+    return new Promise((resolve, reject) => {
+        serversDB.findOne({_id}, {}, function (err, doc) {
+            if(!err){
+                resolve(doc);
+            }
+            reject({_id});
+        })
+    });
+}
+
+function removeServer(_id){
+    return new Promise((resolve, reject) => {
+        serversDB.remove({_id}, {}, function (err, numRemoved) {
+            if(!err){
+                resolve({_id});
+                return;
+            }
+            reject({_id});
+        });
+    });
+}
+
+function findServers(query){
+    return new Promise((resolve, reject) => {
+        serversDB.find(query, function(err, docs){
+            if(!err){
+                resolve(docs);
+            }else{
+                reject();
+            }
+        })
+    });
+}
+
+function updateServer(_id, value){
+    return new Promise((resolve, reject) => {
+        serversDB.update({_id}, {
+                $set: value
+            }, function (err, doc) {
+                if(!err){
+                    resolve();
+                    return;
+                }
+                reject();
+        })
+    })
+}
 
 function getBundles(serverId){
     return new Promise((resolve, reject) => {
@@ -57,5 +120,10 @@ function persistBundles(serverId, bundles){
 
 module.exports = {
     getBundles,
-    persistBundles
+    persistBundles,
+    getServer,
+    updateServer,
+    persistServer,
+    removeServer,
+    findServers
 }

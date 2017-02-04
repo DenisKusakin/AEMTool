@@ -9,8 +9,10 @@ import {
     BUNDLES_FETCHED_SUCCESSFULLY
 } from "./../../common/event-types.js"
 
-import {addServer, removeServer, updateStatus, addBundles} from "./../actions";
+import {addServer, removeServer, updateStatus, addBundles, showSearchField, hideSearchField} from "./../actions";
 import source from "./../events-stream.js";
+import shortcut from "./shortcut.js";
+import {CTRL_F, ESC} from "./constants.js";
 
 export default store => {
     source
@@ -47,4 +49,12 @@ export default store => {
     .subscribe(x => {
         store.dispatch(addBundles(x.data))
     })
+
+    shortcut
+    .filter(x => x.type === CTRL_F)
+    .subscribe(x => store.dispatch(showSearchField()))
+
+    shortcut
+    .filter(x => x.type === ESC)
+    .subscribe(x => store.dispatch(hideSearchField()))
 }

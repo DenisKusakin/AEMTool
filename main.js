@@ -1,7 +1,8 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
-
+const {SHORTCUTS, SHORTCUT} = require('./renderer-process/listeners/constants.js');
+const electronLocalshortcut = require('electron-localshortcut');
 // storage.set('server', {"url": "http://eprupetw1009.petersburg.epam.com:4502", "login": "admin", "password": "admin"}, function(error) {
 //   if (error) throw error;
 // });
@@ -25,6 +26,14 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
+
+   SHORTCUTS.forEach(key => {
+       electronLocalshortcut.register(win, key, () => {
+           win.webContents.send(SHORTCUT, {
+               type: key
+           })
+       });
+   });
 
   // Open the DevTools.
   win.webContents.openDevTools()

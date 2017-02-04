@@ -1,54 +1,15 @@
-//const {
-//    ADD_SERVER_ERROR,
-//    NEW_SERVER_ADDED_SUCCESSFULLY,
-//    SERVER_REMOVE_ERROR,
-//    SERVER_REMOVED_SUCCESSFULLY,
-//    SERVERS_FETCHED_ERROR,
-//    SERVERS_FETCHED_SUCCEFFULLY
-//} = require("./../common/event-types.js");
-
 const {serverStatus} = require("./helpers");
-const Datastore = require('nedb');
+//const Datastore = require("nedb");
+const {getServer, updateServer, persistServer, removeServer, findServers} = require("./db-api.js");
+const isServerStatusUpToDate = require("./helpers/expiration-api.js").serverStatus;
 
-const db = new Datastore({ filename: 'datafile-servers', autoload: true });
+//const db = new Datastore({ filename: 'datafile-servers', autoload: false });
 
 function addServer({name, host, login, password}){
-    var doc = {name, host, login, password}
-    return new Promise((resolve, reject) => {
-        db.insert(doc, function (err, newDoc) {   
-            if(err){
-                reject();
-                return;
-            }
-            resolve(newDoc);
-        });
-    });
+    return persistServer({name, host, login, password})
 }
 
-function removeServer(_id){
-    return new Promise((resolve, reject) => {
-        db.remove({_id}, {}, function (err, numRemoved) {
-            if(!err){
-                resolve({_id});
-                return;
-            }
-            reject({_id});
-        });
-    });
-}
-
-function fetchServers(){
-    return new Promise((resolve, reject) => {
-        db.find({}, function(err, docs){
-            if(!err){
-                resolve(docs);
-            }else{
-                reject(docs);
-            }
-        })
-    });
-}
-
+//Deprecated
 function checkStatus({_id}){
     return new Promise((resolve, reject) => {
         db.findOne({_id}, {}, function (err, doc) {
@@ -62,15 +23,29 @@ function checkStatus({_id}){
     });
 }
 
-function getServer(_id){
-    return new Promise((resolve, reject) => {
-        db.findOne({_id}, {}, function (err, doc) {
-            if(!err){
-                resolve(doc);
+function updateServerStatus({_id}){
+    return getServer(_id)
+        .then(
+            server => {
+                if(server.lastStatus != undefined && isServerStatusUpToDate(server.lastStatus.time)){
+                    return server.lastStatus;
+                }
+                return serverStatus(server)
+                    .then(
+                        status => {
+                            updateServer(_id, {
+                                lastStatus: status
+                            });
+                            return status;
+                        }
+                    )
             }
-            reject({_id});
-        })
-    });
+        )
 }
 
-module.exports = {addServer, removeServer, fetchServers, checkStatus, getServer};
+module.exports = {
+    addServer,
+    removeServer,
+    fetchServers: () => findServers({}),
+    checkStatus: updateServerStatus
+};

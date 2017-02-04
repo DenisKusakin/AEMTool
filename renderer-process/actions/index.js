@@ -6,6 +6,8 @@ const HIDE_NEW_SERVER_FORM = "HIDE_NEW_SERVER_FORM";
 const HIDE_DRAWER = "HIDE_DRAWER";
 const SHOW_DRAWER = "SHOW_DRAWER";
 const ADD_BUNDLES = "ADD_BUNDLES";
+const SHOW_SEARCH_FIELD = "SHOW_SEARCH_FIELD";
+const HIDE_SEARCH_FIELD = "HIDE_SEARCH_FIELD";
 
 module.exports.ADD_SERVER = ADD_SERVER;
 module.exports.REMOVE_SERVER = REMOVE_SERVER;
@@ -15,6 +17,8 @@ module.exports.HIDE_NEW_SERVER_FORM = HIDE_NEW_SERVER_FORM;
 module.exports.HIDE_DRAWER = HIDE_DRAWER;
 module.exports.SHOW_DRAWER = SHOW_DRAWER;
 module.exports.ADD_BUNDLES = ADD_BUNDLES;
+module.exports.SHOW_SEARCH_FIELD = SHOW_SEARCH_FIELD;
+module.exports.HIDE_SEARCH_FIELD = HIDE_SEARCH_FIELD;
 
 module.exports.addServer = function(id, name, host, login, password){
     return {
@@ -47,12 +51,14 @@ module.exports.showNewServerForm = () => ({type: SHOW_NEW_SERVER_FORM});
 module.exports.hideNewServerForm = () => ({type: HIDE_NEW_SERVER_FORM});
 module.exports.showDrawer = () => ({type: SHOW_DRAWER});
 module.exports.hideDrawer = () => ({type: HIDE_DRAWER});
+module.exports.showSearchField = () => ({type: SHOW_SEARCH_FIELD});
+module.exports.hideSearchField = () => ({type: HIDE_SEARCH_FIELD});
 
-module.exports.addBundles = function({_id, list, time}){
+module.exports.addBundles = function({_id, data, time}){
     return {
         type: ADD_BUNDLES,
         _id,
-        list,
+        list: data,
         time
     }
 }
