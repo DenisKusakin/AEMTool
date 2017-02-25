@@ -11,6 +11,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {grey400} from 'material-ui/styles/colors'
+import lastUpdated from "./../../containers/ServerLastUpdated.js"
 
 const iconButtonElement = (
   <IconButton
@@ -22,12 +23,12 @@ const iconButtonElement = (
 );
 
 const rightIconMenu = ({deleteFunc, fetchBundlesFunc}) => (
-  <IconMenu iconButtonElement={iconButtonElement}>
-    <MenuItem>Edit</MenuItem>
-    <MenuItem onTouchTap={deleteFunc}>Delete</MenuItem>
-    <MenuItem onTouchTap={fetchBundlesFunc}>Bundles</MenuItem>
-
-  </IconMenu>
+    <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem>Info</MenuItem>
+        <MenuItem>Edit</MenuItem>
+        <MenuItem onTouchTap={deleteFunc}>Delete</MenuItem>
+        <MenuItem onTouchTap={fetchBundlesFunc}>Bundles</MenuItem>
+    </IconMenu>
 );
 
 class ServerList extends React.Component{
@@ -40,20 +41,17 @@ class ServerList extends React.Component{
         this.renderItem = item => {
             let color = item.lastStatus ? statusColor(item.lastStatus.status) : undefined;
             let text = item.lastStatus ? statusText(item.lastStatus.status) : undefined;
-            let secondaryText = color && text ? (<p><span style={{color}}>{text}</span><br /></p>) : undefined;
+            let LastUpdatedComponent = lastUpdated(item.id);
 
-            return secondaryText ? (<ListItem
+            let secondaryText = color && text ? (<p><span style={{color}}>{text}</span> <LastUpdatedComponent/> <br /></p>) : undefined;
+
+            return (<ListItem
                   rightIconButton={rightIconMenu({fetchBundlesFunc: fetchBundlesClick(item.id), deleteFunc: onRemoveClick(item.id)})}
                   primaryText={item.name}
                   key={item.id}
                   secondaryText={secondaryText}
                   secondaryTextLines={1}
-                />) :
-                 (<ListItem
-                   rightIconButton={rightIconMenu(onRemoveClick(item.id))}
-                   primaryText={item.name}
-                   key={item.id}
-                 />);
+                />);
         }
     }
 

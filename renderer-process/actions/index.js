@@ -9,16 +9,18 @@ const ADD_BUNDLES = "ADD_BUNDLES";
 const SHOW_SEARCH_FIELD = "SHOW_SEARCH_FIELD";
 const HIDE_SEARCH_FIELD = "HIDE_SEARCH_FIELD";
 
-module.exports.ADD_SERVER = ADD_SERVER;
-module.exports.REMOVE_SERVER = REMOVE_SERVER;
-module.exports.UPDATE_SERVER_STATUS = UPDATE_SERVER_STATUS;
-module.exports.SHOW_NEW_SERVER_FORM = SHOW_NEW_SERVER_FORM;
-module.exports.HIDE_NEW_SERVER_FORM = HIDE_NEW_SERVER_FORM;
-module.exports.HIDE_DRAWER = HIDE_DRAWER;
-module.exports.SHOW_DRAWER = SHOW_DRAWER;
-module.exports.ADD_BUNDLES = ADD_BUNDLES;
-module.exports.SHOW_SEARCH_FIELD = SHOW_SEARCH_FIELD;
-module.exports.HIDE_SEARCH_FIELD = HIDE_SEARCH_FIELD;
+module.exports = {
+    ADD_SERVER,
+    REMOVE_SERVER,
+    UPDATE_SERVER_STATUS,
+    SHOW_NEW_SERVER_FORM,
+    HIDE_NEW_SERVER_FORM,
+    HIDE_DRAWER,
+    SHOW_DRAWER,
+    ADD_BUNDLES,
+    SHOW_SEARCH_FIELD,
+    HIDE_SEARCH_FIELD
+}
 
 module.exports.addServer = function(id, name, host, login, password){
     return {

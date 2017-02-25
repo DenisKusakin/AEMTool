@@ -1,4 +1,5 @@
 import servers from "./../reducers/servers.js"
+import searches from "./searches.js"
 import bundles from "./bundles.js";
 import {combineReducers} from "redux"
 import {
@@ -45,6 +46,8 @@ export const rootReducer = combineReducers(
 
         form: formReducer,
 
-        bundles
+        bundles,
+
+        searches: searches
     }
 );

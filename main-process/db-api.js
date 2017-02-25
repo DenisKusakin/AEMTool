@@ -1,10 +1,10 @@
 const Datastore = require('nedb');
 
-const db = new Datastore({ filename: 'datafile-bundles', autoload: true });
 const serversDB = new Datastore({ filename: 'datafile-servers', autoload: true });
+const db = new Datastore({ filename: 'datafile-server-data', autoload: true });
 
+//TODO: Servers should be implemented in the same way as below
 function persistServer(doc){
-    //var doc = {name, host, login, password}
     return new Promise((resolve, reject) => {
         serversDB.insert(doc, function (err, newDoc) {
             if(err){
@@ -65,62 +65,63 @@ function updateServer(_id, value){
     })
 }
 
-function getBundles(serverId){
-    return new Promise((resolve, reject) => {
-        db.findOne({serverId}, {}, function(error, doc){
-            if(!error && doc != null){
-                resolve(doc);
-            }
-            reject();
-        })
-    });
-}
-
-function persistBundles(serverId, bundles){
-    return new Promise((resolve, reject) => {
-        db.findOne({serverId}, {}, function(error, doc){
-            if(!error && doc != null){
-                resolve()
-            }
-            reject();
-        })
-    }).then(
-        () => {
-            return new Promise((resolve, reject) => {
-                db.update({serverId}, {
-                    $set: {
-                        data: bundles,
-                        time: new Date()
-                    }
-                }, {}, (error, numReplaced) => {
-                    if(!error && numReplaced === 1){
-                        resolve();
-                    }
-                    reject(numReplaced !== 1 ? "Not found" : error);
-                })
-            });
-        },
-        () => {
-            return new Promise((resolve, reject) => {
-                let doc = {
-                    data: bundles,
-                    time: new Date(),
-                    serverId
-                }
-                db.insert(doc, (err, newDoc) => {
-                    if(!err){
-                        resolve();
-                    }
-                    reject();
-                })
-            });
+const getEntity = database => entityType => serverId => new Promise((resolve, reject) => {
+    database.findOne({serverId}, {}, function(error, doc){
+        if(!error && doc != null && doc[entityType]){
+          resolve(doc[entityType]);
         }
-    )
-}
+        reject();
+    })
+});
+
+const persistEntity = database => entityType => (serverId, entity) => new Promise((resolve, reject) => {
+    database.findOne({serverId}, {}, function(error, doc){
+        if(!error && doc != null && doc[entityType]){
+            resolve();
+            return;
+        }
+        reject();
+    })
+}).then(
+    () => {
+        return new Promise((resolve, reject) => {
+            let $set = {
+                [entityType]: {
+                    data: entity.data,
+                    time: entity.time
+                }
+            };
+            database.update({serverId}, {$set}, {}, (error, numReplaced) => {
+                if(!error && numReplaced === 1){
+                    resolve();
+                }
+                reject(numReplaced !== 1 ? "Not found" : error);
+            })
+        });
+    },
+    () => {
+        return new Promise((resolve, reject) => {
+            let doc = {
+                [entityType]: {
+                    data: entity.data,
+                    time: entity.time,
+                },
+                serverId
+            }
+            database.insert(doc, (err, newDoc) => {
+                if(!err){
+                    resolve();
+                }
+                reject();
+            })
+        });
+    }
+)
 
 module.exports = {
-    getBundles,
-    persistBundles,
+    getEntity: getEntity(db),
+    persistEntity: persistEntity(db),
+//  Rest
     getServer,
     updateServer,
     persistServer,

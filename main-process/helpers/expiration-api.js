@@ -12,6 +12,6 @@ const timeValidator = allowedDiff => time => {
 }
 
 module.exports = {
-    bundles: timeValidator(60 * 1000),
-    serverStatus: timeValidator(10 * 1000)
+    bundles: timeValidator(60 * 1000 * 10),
+    serverStatus: timeValidator(5 * 1000)
 }

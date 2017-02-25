@@ -1,9 +1,9 @@
 const request = require("request");
 const SLURI = require("sluri");
-const {getBundles, persistBundles, getServer} = require("./db-api.js");
+const {getEntity, persistEntity, getServer} = require("./db-api.js");
 const isBundlesUpToDate = require("./helpers/expiration-api.js").bundles;
 
-const fetchBundles = (_id) => {console.log("! ", _id);
+const fetchResource = resource => _id => {
     return getServer(_id)
         .then(server => {
             let {host, login, password} = server;
@@ -11,7 +11,7 @@ const fetchBundles = (_id) => {console.log("! ", _id);
                 var sluri = new SLURI('http://' + host);
                 sluri.username = login;
                 sluri.password = password;
-                sluri.pathname = "/system/console/bundles.json";
+                sluri.pathname = resource + ".json";
 
                 request(sluri.href, function (error, response, body) {
                     if(!!error || response === undefined){
@@ -19,35 +19,36 @@ const fetchBundles = (_id) => {console.log("! ", _id);
                         return;
                     }
                     let json = JSON.parse(response.body);
-                    resolve(json);
+                    resolve({data: json, time: new Date()});
                 })
             });
         })
 }
 
-const getBundlesById = forceUpdate => (_id) => {
-    return getBundles(_id)
+const getEntityById = (getFunc, fetchFunc, persistFunc) => forceUpdate => (_id) => {
+    return getFunc(_id)
         .then(
-            bundles => {
+            res => {
                 if(forceUpdate){
                     throw "Force update";
                 }
 
-                if(isBundlesUpToDate(bundles.time)){
-                    return bundles;
+                if(isBundlesUpToDate(res.time)){
+                    return res;
                 }
-                throw "More than 1 minute"
+                throw "Out of date"
             }
         )
-        .then(x => {console.log("!?", x); return x;}, () => {console.log("?? ");
-            return fetchBundles(_id)
-                .then(fetchedBundles => {
-                    persistBundles(_id, fetchedBundles);
-                    return fetchedBundles;
+        .then(x => {return x;}, () => {
+            return fetchFunc(_id)
+                .then(fetchResult => {
+                    persistFunc(_id, fetchResult);
+                    return fetchResult;
                 })
         })
 }
 
+//TODO: refactoring
 const bundleAction = action => (_id, bundleId) => {
     return getServer(_id)
         .then(server => {
@@ -66,14 +67,19 @@ const bundleAction = action => (_id, bundleId) => {
                     }
                     let json = JSON.parse(response.body);
                     resolve({list: json.data, time: new Date()});
-                    getBundlesById(true)(_id);
+                    //getBundlesById(true)(_id);
                 })
             });
         })
 }
 
+const getBundles = getEntity("bundles");
+const persistBundles = persistEntity("bundles");
+const fetchBundles = fetchResource("/system/console/bundles");
+
 module.exports = {
-    fetchBundles: getBundlesById(false),
+    fetchBundles: getEntityById(getBundles, fetchBundles, persistBundles)(false),
     startBundle: bundleAction("start"),
-    stopBundle: bundleAction("stop")
+    stopBundle: bundleAction("stop"),
+    fetchComponents: getEntityById(getEntity("components"), fetchResource("/system/console/components"), persistEntity("components"))(false)
 }

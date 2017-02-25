@@ -1,56 +1,37 @@
 import React, {Component} from 'react';
-import AutoComplete from 'material-ui/AutoComplete';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
 
-class AutoCompleteExampleSimple extends Component {
-  constructor(props){
-    super(props);
-    this.handleUpdateInput = this.handleUpdateInput.bind(this);
-    this.state = {dataSource: []};
-  }
-
-  handleUpdateInput(value) {
-    this.setState({
-      dataSource: [
-          {
-            text: 'text-value1',
-            value: (
-              <MenuItem
-                primaryText="text-value1"
-                secondaryText="&#9786;"
-              />
-            ),
-          },
-          {
-            text: "",
-            value: (<Divider/>)
-          },
-          {
-            text: 'text-value2',
-            value: (
-              <MenuItem
-                primaryText="text-value2"
-                secondaryText="&#9786;"
-              />
-            ),
-          }
-      ],
-    });
-  }
-
-  render() {
+const renderCheckbox = changeCheckboxState => ({checked, title, id}) => {
     return (
-      <div>
-        <AutoComplete
-          hintText="Type anything"
-          dataSource={this.state.dataSource}
-          filter={AutoComplete.noFilter}
-          onUpdateInput={this.handleUpdateInput}
-        />
-      </div>
+        <Checkbox
+            label={title}
+            key={id}
+            onCheck={(e, checked) => changeCheckboxState(id, checked)}
+            checked={checked}/>
     );
-  }
 }
 
-export default AutoCompleteExampleSimple
+class SearchSection extends Component {
+    constructor(props){
+        super(props);
+    }
+
+    render() {
+        return (
+            <div>
+                <div>
+                    {this.props.checkboxes.map(renderCheckbox(this.props.changeCheckboxState))}
+                </div>
+                <TextField
+                    hintText="Search"
+                    style={{textColor: "black"}}
+                    onChange={(e, value) => this.props.changeFieldValue(value)}
+                    value={this.props.value}
+                    fullWidth={true}/>
+            </div>
+        );
+    }
+}
+
+export default SearchSection
