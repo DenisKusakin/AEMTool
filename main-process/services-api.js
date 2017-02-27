@@ -49,7 +49,7 @@ const getEntityById = (getFunc, fetchFunc, persistFunc) => forceUpdate => (_id) 
 }
 
 //TODO: refactoring
-const bundleAction = action => (_id, bundleId) => {
+const bundleAction = action => refresh => (_id, bundleId) => {
     return getServer(_id)
         .then(server => {
             let {host, login, password} = server;
@@ -61,25 +61,30 @@ const bundleAction = action => (_id, bundleId) => {
                 sluri.searchParams.append("action", action);
 
                 request.post(sluri.href, function (error, response, body) {
-                    if(!!error || response === undefined || response.statusCode !== 200 || response.statusCode !== 201){
-                        reject();
+                    if(!!error || response === undefined || response.statusCode !== 200){
+                        console.log("!", error, response.statusCode)
+                        reject(error, response);
                         return;
                     }
-                    let json = JSON.parse(response.body);
-                    resolve({list: json.data, time: new Date()});
-                    //getBundlesById(true)(_id);
+                    //let json = JSON.parse(response.body);
+                    //resolve(json);
+                    resolve();
+                    //resolve({list: json.data, time: new Date()});
+                    refresh(_id);
                 })
             });
         })
 }
 
-const getBundles = getEntity("bundles");
-const persistBundles = persistEntity("bundles");
-const fetchBundles = fetchResource("/system/console/bundles");
+//const getBundles = getEntity("bundles");
+//const persistBundles = persistEntity("bundles");
+//const fetchBundles = fetchResource("/system/console/bundles");
+//
+//const forceUpdateBundles = getEntityById(getBundles, fetchBundles, persistBundles)(true);
 
 module.exports = {
-    fetchBundles: getEntityById(getBundles, fetchBundles, persistBundles)(false),
-    startBundle: bundleAction("start"),
-    stopBundle: bundleAction("stop"),
-    fetchComponents: getEntityById(getEntity("components"), fetchResource("/system/console/components"), persistEntity("components"))(false)
+    fetchBundles: fetchResource("/system/console/bundles"),//getEntityById(getBundles, fetchBundles, persistBundles)(false),
+    startBundle: bundleAction("start")(() => {}),
+    stopBundle: bundleAction("stop")(() => {}),
+    fetchComponents: fetchResource("/system/console/components")//getEntityById(getEntity("components"), fetchResource("/system/console/components"), persistEntity("components"))(false)
 }

@@ -4,13 +4,23 @@ import {List, ListItem} from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
+import BundleActionButton from './bundle-action-button.js';
+import LastUpdated from './../last-updated.js';
 
-const renderItems = items => {
-    const renderItem = item => (
+import {startBundle, stopBundle} from "./../../api.js"
+
+const renderItems = (items, _id) => {
+    const renderItem = ({name, symbolicName, stateRaw, id}) => (
         <ListItem
-              key={item.name}
-              primaryText={item.name}
-              secondaryText={item.symbolicName}/>
+              key={name}
+              primaryText={name}
+              rightIconButton ={
+                  <BundleActionButton active={stateRaw === 32}
+                      start={() => startBundle({_id, bundleId: id})}
+                      stop={() => stopBundle({_id, bundleId: id})}
+                  />
+              }
+              secondaryText={symbolicName}/>
     )
     return (
         items.length > 0
@@ -23,21 +33,20 @@ const renderItems = items => {
     );
 }
 
-const renderChunk = (totalAmount, stateTimeComponentFactory) => chunk => {
+const renderChunk = (totalAmount) => chunk => {
     var style = {
         width: "" + Math.floor(100 / totalAmount) + "%",
         //textAlign: 'center',
         display: 'inline-block'
     };
 
-    var {id, title, items} = chunk;
-    const StateTime = stateTimeComponentFactory(id);
+    var {id, title, items, stateTime} = chunk;
 
     return (
-        <Paper style={style} zDepth={1} key={id}>
-            <Subheader>{title} <StateTime/></Subheader>
+        <Paper style={style} zDepth={1} key={id + stateTime}>
+            <Subheader>{title} <LastUpdated time={stateTime}/></Subheader>
             <Divider/>
-            {items ? renderItems(items) : <CircularProgress />}
+            {items ? renderItems(items, id) : <CircularProgress />}
         </Paper>
     );
 }
@@ -50,7 +59,7 @@ class SearchResult extends Component {
     render() {
         return (
             <div>
-                {this.props.chunks.map(renderChunk(this.props.chunks.length, this.props.stateTimeComponentFactory))}
+                {this.props.chunks.map(renderChunk(this.props.chunks.length))}
             </div>
         );
     }

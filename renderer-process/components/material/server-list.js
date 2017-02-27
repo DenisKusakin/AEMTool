@@ -11,7 +11,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {grey400} from 'material-ui/styles/colors'
-import lastUpdated from "./../../containers/ServerLastUpdated.js"
+import LastUpdated from "./../../components/last-updated.js"
 
 const iconButtonElement = (
   <IconButton
@@ -41,14 +41,14 @@ class ServerList extends React.Component{
         this.renderItem = item => {
             let color = item.lastStatus ? statusColor(item.lastStatus.status) : undefined;
             let text = item.lastStatus ? statusText(item.lastStatus.status) : undefined;
-            let LastUpdatedComponent = lastUpdated(item.id);
+            let time = item.lastStatus ? item.lastStatus.time : undefined;
 
-            let secondaryText = color && text ? (<p><span style={{color}}>{text}</span> <LastUpdatedComponent/> <br /></p>) : undefined;
+            let secondaryText = color && text ? (<p><span style={{color}}>{text}</span> <LastUpdated time={time}/> <br /></p>) : undefined;
 
             return (<ListItem
                   rightIconButton={rightIconMenu({fetchBundlesFunc: fetchBundlesClick(item.id), deleteFunc: onRemoveClick(item.id)})}
                   primaryText={item.name}
-                  key={item.id}
+                  key={"" + item.id + "-" + (item.lastStatus ? item.lastStatus.time : "")}
                   secondaryText={secondaryText}
                   secondaryTextLines={1}
                 />);

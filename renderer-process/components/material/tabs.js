@@ -4,11 +4,8 @@ import smartSearchField from "./../../containers/SearchField.js";
 import searchResult from "./../../containers/SearchResult.js";
 import searchButton from "./../../containers/SearchButton.js";
 import {stateTime} from "./../../containers/SearchResult.js";
+import CodeEditor from "./../code-editor.js";
 const {bundles, components} = remote.require("./main-process/search-api.js");
-
-const BundlesSearchField = smartSearchField("bundles-search");
-const BundlesSearchResult = searchResult("bundles-search");
-const BundlesSearchButton = searchButton(bundles)("bundles-search");
 
 const searchComponents = (id, searchFunc) => {
     const SearchField = smartSearchField(id);
@@ -19,15 +16,16 @@ const searchComponents = (id, searchFunc) => {
         <div>
             <SearchField/>
             <SearchButton/>
-            <SearchResult stateTimeComponentFactory={stateTimeComponentFactory}/>
+            <SearchResult/>
         </div>
     )
 }
 
-const stateTimeComponentFactory = stateTime("bundles-search");
-
 const TabsExampleSimple = () => (
     <Tabs>
+        <Tab label="Groovy" >
+            <CodeEditor/>
+        </Tab>
         <Tab label="Bundles" >
             {searchComponents("bundles", bundles)}
         </Tab>

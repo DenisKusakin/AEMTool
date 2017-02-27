@@ -75,13 +75,12 @@ const _startBundle = decorator(args =>{
         let {_id, bundleId} = args;
             console.log(bundleId);
             return startBundle(_id, bundleId)
-                .then(res => {
-                    console.log(args);
-                    fetchBundles(_id, bundleId);
-                    res._id = _id;
-                    res.bundleId = bundleId;
-                    return res;
-                })
+//                .then(res => {
+//                    console.log(args);
+//                    res._id = _id;
+//                    res.bundleId = bundleId;
+//                    return res;
+//                })
     },
     {
         resolve: BUNDLE_STARTED_SUCCESSFULLY,
@@ -91,15 +90,14 @@ const _startBundle = decorator(args =>{
 
 const _stopBundle = decorator(args =>{
         let {_id, bundleId} = args;
-        console.log(bundleId);
+        console.log(_id, bundleId);
         return stopBundle(_id, bundleId)
-            .then(res => {
-                console.log(args);
-                fetchBundles(_id, bundleId);
-                res._id = _id;
-                res.bundleId = bundleId;
-                 return res;
-            })
+//            .then(res => {
+//                console.log(args);
+//                res._id = _id;
+//                res.bundleId = bundleId;
+//                 return res;
+//            })
     },
     {
         resolve: BUNDLE_STOPPED_SUCCESSFULLY,

@@ -13,7 +13,7 @@ class LastUpdated extends React.Component {
             let text = computeText(props.time);
             this.setState({text})
         };
-        this.state = {
+        this.state = !props.time ? null : {
             text: computeText(props.time)
         }
     }
