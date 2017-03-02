@@ -16,6 +16,12 @@ import {
     BUNDLES_FETCHED_SUCCESSFULLY
 } from "./../../common/event-types.js"
 
+import {
+    ADD_SERVER,
+    REMOVE_SERVER,
+    UPDATE_SERVER_STATUS
+} from "./actions"
+
 function* addServer(action) {
     let {host, name, login, password} = action;
     const {response, error} =
@@ -46,8 +52,7 @@ function* removeServer(action) {
     }
 }
 
-function* fetchServers(action) {
-    let {id} = action;
+function* fetchServers() {
     const {response, error} =
         yield
             Api.fetchServers()
@@ -56,47 +61,33 @@ function* fetchServers(action) {
 
     if(response){
         yield
-            put({ type: SERVERS_FETCHED_SUCCEFFULLY});
-            
             response
-                .forEach(
+                .map(
                     ({_id, name, host, login, password}) => put({ type: NEW_SERVER_ADDED_SUCCESSFULLY, id, name, host, login, password})
                 )
+                .push(put({ type: SERVERS_FETCHED_SUCCEFFULLY}))
     } else{
         yield put({ type: SERVERS_FETCHED_ERROR })
     }
 }
 
-/*
-* SAMPLE
-*/
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* fetchUser(action) {
-   try {
-      const user = yield call(Api.fetchUser, action.payload.userId);
-      yield put({type: "USER_FETCH_SUCCEEDED", user: user});
-   } catch (e) {
-      yield put({type: "USER_FETCH_FAILED", message: e.message});
-   }
+function* checkStatus(action) {
+    const {_id} = action;
+    const {response, error} =
+        yield
+            Api.checkStatus({_id})
+                .then(response => {response})
+                .catch(error => {error})
+    if(response){
+        yield put({ type: SERVER_STATUS_UPDATED, id: _id })
+    }
 }
 
-/*
-  Starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action.
-  Allows concurrent fetches of user.
-*/
-function* mySaga() {
-  yield takeEvery("USER_FETCH_REQUESTED", fetchUser);
+export default function* rootSaga() {
+    yield [
+        takeEvery(ADD_SERVER, addServer)(),
+        takeEvery(REMOVE_SERVER, removeServer)(),
+        takeEvery("FETCH_SERVERS", fetchServers)(),
+        takeEvery(UPDATE_SERVER_STATUS, checkStatus)()
+    ]
 }
-
-/*
-  Alternatively you may use takeLatest.
-
-  Does not allow concurrent fetches of user. If "USER_FETCH_REQUESTED" gets
-  dispatched while a fetch is already pending, that pending fetch is cancelled
-  and only the latest one will be run.
-*/
-function* mySaga() {
-  yield takeLatest("USER_FETCH_REQUESTED", fetchUser);
-}
-
-export default mySaga;
