@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Form from './../new-server.js';
 import {submit} from './../new-server.js';
 import { connect } from 'react-redux';
-import {showNewServerForm, hideNewServerForm} from "./../../actions";
+import {showNewServerForm, hideNewServerForm, addServer, removeServer, updateStatus} from "./../../actions";
 
 const actions = (close) => [
     <FlatButton
@@ -31,6 +31,7 @@ const dialog = (props) => {
 export default connect(
     state => ({open: state.newServerFormVisible}),
     dispatch => ({
-        close: () => dispatch(hideNewServerForm())
+        close: () => dispatch(hideNewServerForm()),
+        add: ({name, host, login, password}) => dispatch(addServer(name, host, login, password))
     })
 )(dialog)

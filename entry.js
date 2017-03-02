@@ -1,3 +1,4 @@
+import "babel-polyfill";
 require('./less/main.less');
 
 import store from './renderer-process/store/configureStore.js'

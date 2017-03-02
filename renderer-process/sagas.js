@@ -1,7 +1,4 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
-//API
-//const {addServer, removeServer, fetchServers, checkStatus} = remote.require("./main-process/api.js");
-//const {fetchBundles, startBundle, stopBundle} = remote.require("./main-process/services-api.js");
+import { call, put, takeEvery, takeLatest, take, fork } from 'redux-saga/effects'
 const Api = remote.require("./main-process/api.js");
 const ServicesApi = remote.require("./main-process/services-api.js");
 
@@ -14,7 +11,7 @@ import {
     SERVERS_FETCHED_SUCCEFFULLY,
     SERVER_STATUS_UPDATED,
     BUNDLES_FETCHED_SUCCESSFULLY
-} from "./../../common/event-types.js"
+} from "./../common/event-types.js"
 
 import {
     ADD_SERVER,
@@ -24,17 +21,19 @@ import {
 } from "./actions"
 
 function* addServer(action) {
-    let {host, name, login, password} = action;
-    const {response, error} =
-        yield
-            Api.addServer({name, host, login, password})
-                .then(response => ({response}))
-                .catch(error => ({error}))
+    while(true){
+        let {host, name, login, password} = yield take(ADD_SERVER);
+        const {response, error} =
+            yield
+                Api.addServer({name, host, login, password})
+                    .then(response => ({response}))
+                    .catch(error => ({error}))
 
-    if(response){
-        yield put({ type: NEW_SERVER_ADDED_SUCCESSFULLY, id: response._id, name, host, login, password })
-    } else{
-        yield put({ type: ADD_SERVER_ERROR, name })
+        if(response){
+            yield put({ type: NEW_SERVER_ADDED_SUCCESSFULLY, id: response._id, name, host, login, password })
+        } else{
+            yield put({ type: ADD_SERVER_ERROR, name })
+        }
     }
 }
 
@@ -84,11 +83,8 @@ function* checkStatus(action) {
     }
 }
 
-export default function* rootSaga() {
+export default function* root() {
     yield [
-        takeEvery(ADD_SERVER, addServer)(),
-        takeEvery(REMOVE_SERVER, removeServer)(),
-        takeEvery("FETCH_SERVERS", fetchServers)(),
-        takeEvery(UPDATE_SERVER_STATUS, checkStatus)()
+        fork(addServer)
     ]
 }

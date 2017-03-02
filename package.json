@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "main.js",
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "brace": "^0.10.0",
     "electron-json-storage": "^2.1.0",
     "electron-localshortcut": "^1.0.0",

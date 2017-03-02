@@ -17,7 +17,7 @@ import Tabs from "./../components/material/tabs.js"
 
 import Paper from 'material-ui/Paper';
 
-fetchServers();
+//fetchServers();
 
 class Root extends React.Component{
   constructor(props){

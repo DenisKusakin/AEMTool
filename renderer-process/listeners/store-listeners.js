@@ -15,34 +15,34 @@ import shortcut from "./shortcut.js";
 import {CTRL_F, ESC} from "./constants.js";
 
 export default store => {
-    source
-    .filter(x => x.type && x.type === NEW_SERVER_ADDED_SUCCESSFULLY)
-    .subscribe(x => {
-        let {_id, host, name, login, password} = x.data;
-        store.dispatch(addServer(_id, name, host, login, password));
-    })
-
-    source
-    .filter(x => x.type && x.type === SERVER_REMOVED_SUCCESSFULLY)
-    .subscribe(x => {
-        let {_id} = x.data;
-        store.dispatch(removeServer(_id));
-    })
-
-    source
-    .filter(x => x.type && x.type === SERVERS_FETCHED_SUCCEFFULLY)
-    .subscribe(x => {
-        x.data.forEach( server => {
-            let {_id, name, host, login, password} = server;
-            store.dispatch(addServer(_id, name, host, login, password));
-        })
-    })
-
-    source
-    .filter(x => x.type && x.type === SERVER_STATUS_UPDATED)
-    .subscribe(x => {
-        store.dispatch(updateStatus(x.data));
-    })
+//    source
+//    .filter(x => x.type && x.type === NEW_SERVER_ADDED_SUCCESSFULLY)
+//    .subscribe(x => {
+//        let {_id, host, name, login, password} = x.data;
+//        store.dispatch(addServer(_id, name, host, login, password));
+//    })
+//
+//    source
+//    .filter(x => x.type && x.type === SERVER_REMOVED_SUCCESSFULLY)
+//    .subscribe(x => {
+//        let {_id} = x.data;
+//        store.dispatch(removeServer(_id));
+//    })
+//
+//    source
+//    .filter(x => x.type && x.type === SERVERS_FETCHED_SUCCEFFULLY)
+//    .subscribe(x => {
+//        x.data.forEach( server => {
+//            let {_id, name, host, login, password} = server;
+//            store.dispatch(addServer(_id, name, host, login, password));
+//        })
+//    })
+//
+//    source
+//    .filter(x => x.type && x.type === SERVER_STATUS_UPDATED)
+//    .subscribe(x => {
+//        store.dispatch(updateStatus(x.data));
+//    })
 
     source
     .filter(x => x.type && x.type === BUNDLES_FETCHED_SUCCESSFULLY)

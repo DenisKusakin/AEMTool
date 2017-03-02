@@ -24,14 +24,13 @@ module.exports = {
     FETCH_SERVERS
 }
 
-module.exports.addServer = function(id, name, host, login, password){
+module.exports.addServer = function(name, host, login, password){
     return {
         type: ADD_SERVER,
         name,
         host,
         login,
-        password,
-        id,
+        password
     }
 }
 

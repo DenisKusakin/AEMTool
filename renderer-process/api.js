@@ -34,31 +34,31 @@ var decorator = (func, {resolve, reject}) => args => {
        )
 }
 
-const _addServer = decorator(addServer, {
-  resolve: NEW_SERVER_ADDED_SUCCESSFULLY,
-  reject: ADD_SERVER_ERROR
-});
-
-const _removeServer = decorator(removeServer, {
-    resolve: SERVER_REMOVED_SUCCESSFULLY,
-    reject: SERVER_REMOVE_ERROR
-});
-
-const _fetchServers = decorator(fetchServers, {
-    resolve: SERVERS_FETCHED_SUCCEFFULLY,
-    reject: SERVERS_FETCHED_ERROR
-}) ;
-
-const _checkServer = decorator(args =>
-    checkStatus(args)
-        .then(res => {
-            res._id = args._id;
-            return res;
-        })
-, {
-    resolve: SERVER_STATUS_UPDATED,
-    reject: SERVER_STATUS_UPDATE_ERROR
-});
+//const _addServer = decorator(addServer, {
+//  resolve: NEW_SERVER_ADDED_SUCCESSFULLY,
+//  reject: ADD_SERVER_ERROR
+//});
+//
+//const _removeServer = decorator(removeServer, {
+//    resolve: SERVER_REMOVED_SUCCESSFULLY,
+//    reject: SERVER_REMOVE_ERROR
+//});
+//
+//const _fetchServers = decorator(fetchServers, {
+//    resolve: SERVERS_FETCHED_SUCCEFFULLY,
+//    reject: SERVERS_FETCHED_ERROR
+//}) ;
+//
+//const _checkServer = decorator(args =>
+//    checkStatus(args)
+//        .then(res => {
+//            res._id = args._id;
+//            return res;
+//        })
+//, {
+//    resolve: SERVER_STATUS_UPDATED,
+//    reject: SERVER_STATUS_UPDATE_ERROR
+//});
 
 const _fetchBundles = decorator(args =>
     fetchBundles(args)
@@ -106,10 +106,10 @@ const _stopBundle = decorator(args =>{
 );
 
 export default {
-    addServer: _addServer,
-    removeServer: _removeServer,
-    fetchServers: _fetchServers,
-    checkServer: _checkServer,
+//    addServer: _addServer,
+//    removeServer: _removeServer,
+//    fetchServers: _fetchServers,
+//    checkServer: _checkServer,
     fetchBundles: _fetchBundles,
     startBundle: _startBundle,
     stopBundle: _stopBundle
