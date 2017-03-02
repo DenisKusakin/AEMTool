@@ -8,6 +8,7 @@ const SHOW_DRAWER = "SHOW_DRAWER";
 const ADD_BUNDLES = "ADD_BUNDLES";
 const SHOW_SEARCH_FIELD = "SHOW_SEARCH_FIELD";
 const HIDE_SEARCH_FIELD = "HIDE_SEARCH_FIELD";
+const FETCH_SERVERS = "FETCH_SERVERS";
 
 module.exports = {
     ADD_SERVER,
@@ -19,7 +20,8 @@ module.exports = {
     SHOW_DRAWER,
     ADD_BUNDLES,
     SHOW_SEARCH_FIELD,
-    HIDE_SEARCH_FIELD
+    HIDE_SEARCH_FIELD,
+    FETCH_SERVERS
 }
 
 module.exports.addServer = function(id, name, host, login, password){

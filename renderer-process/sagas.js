@@ -19,7 +19,8 @@ import {
 import {
     ADD_SERVER,
     REMOVE_SERVER,
-    UPDATE_SERVER_STATUS
+    UPDATE_SERVER_STATUS,
+    FETCH_SERVERS
 } from "./actions"
 
 function* addServer(action) {
