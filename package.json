@@ -13,6 +13,7 @@
     "react-interval": "^1.3.3",
     "redux-async-initial-state": "^0.2.0",
     "redux-form": "^6.4.3",
+    "redux-saga": "^0.14.3",
     "redux-storage": "^4.1.2",
     "redux-storage-engine-electronjsonstorage": "^0.2.1"
   },

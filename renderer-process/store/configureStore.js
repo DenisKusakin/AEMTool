@@ -5,13 +5,17 @@ import {rootReducer} from '../reducers/index.js'
 import DevTools from './../containers/DevTools.js'
 import listeners from "./../listeners"
 import persistState from 'redux-localstorage'
+import mySaga from './../sagas.js'
+import createSagaMiddleware from 'redux-saga'
+
+const sagaMiddleware = createSagaMiddleware()
 
 const configureStore = preloadedState => {
   return createStore(
     rootReducer,
     preloadedState,
     compose(
-      applyMiddleware(thunk),
+      applyMiddleware(sagaMiddleware),
       DevTools.instrument(),
       //persistState()
     )
@@ -20,6 +24,7 @@ const configureStore = preloadedState => {
 }
 
 const store = configureStore({});
-listeners(store);
+//listeners(store);
+sagaMiddleware.run(mySaga)
 
 export default store;
