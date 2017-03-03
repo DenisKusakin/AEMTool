@@ -20,14 +20,18 @@ import {
     FETCH_SERVERS
 } from "./actions"
 
+function callApi(func, args){
+
+}
+
 function* addServer(action) {
     while(true){
         let {host, name, login, password} = yield take(ADD_SERVER);
-        const {response, error} =
-            yield
-                Api.addServer({name, host, login, password})
-                    .then(response => ({response}))
-                    .catch(error => ({error}))
+        const {response, error} = yield call(
+            () => Api.addServer({name, host, login, password})
+                      .then(response => ({response}))
+                      .catch(error => ({error}))
+        )
 
         if(response){
             yield put({ type: NEW_SERVER_ADDED_SUCCESSFULLY, id: response._id, name, host, login, password })
