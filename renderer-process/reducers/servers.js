@@ -1,4 +1,10 @@
-const {NEW_SERVER_ADDED_SUCCESSFULLY, SERVER_REMOVED_SUCCESSFULLY, SERVER_STATUS_UPDATED} = require("./../../common/event-types.js")
+const {
+    NEW_SERVER_ADDED_SUCCESSFULLY,
+    SERVER_REMOVED_SUCCESSFULLY,
+    SERVER_STATUS_UPDATED,
+    SERVERS_FETCHED_SUCCESSFULLY
+} = require("./../../common/event-types.js")
+
 const {List} = require("immutable")
 
 const servers = (state = {items: []}, action) => {
@@ -25,6 +31,11 @@ const servers = (state = {items: []}, action) => {
                     time
                 }
             })).toArray()            
+        }
+    } else if(action.type === SERVERS_FETCHED_SUCCESSFULLY){
+        let {items} = action;
+        return {
+            items: items.map(({name, host, login, password, _id}) => ({name, host, login, password, id: _id}))
         }
     }
 

@@ -10,4 +10,9 @@ const mapStateToProps = searchId => state => {
     return {chunks}
 }
 
-export default searchId => connect(mapStateToProps(searchId))(searchField);
+const component = searchId => connect(mapStateToProps(searchId))(searchField);
+
+export default {
+    Bundles: component("bundles"),
+    Components: component("components")
+}

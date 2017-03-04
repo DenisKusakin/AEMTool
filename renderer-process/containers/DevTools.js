@@ -6,7 +6,7 @@ import FilterMonitor from 'redux-devtools-filter-actions';
 
 export default createDevTools(
   <FilterMonitor
-      blacklist={['UPDATE_STATUS']}>
+      blacklist={['SERVER_STATUS_UPDATED']}>
       <DockMonitor toggleVisibilityKey="ctrl-h"
                    changePositionKey="ctrl-w">
         <LogMonitor />

@@ -36,7 +36,7 @@ class ServerList extends React.Component{
     constructor(props){
         super(props);
         let onRemoveClick = id => () => props.removeServer(id);
-        let fetchBundlesClick = id => () => props.fetchBundles(id);
+        let fetchBundlesClick = () => () => {};//TODO: id => () => props.fetchBundles(id);
 
         this.renderItem = item => {
             let color = item.lastStatus ? statusColor(item.lastStatus.status) : undefined;

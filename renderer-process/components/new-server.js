@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm, formValueSelector, Form } from 'redux-form'
+import { Field, Form } from 'redux-form'
 import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -14,7 +14,7 @@ var renderTextField = props => (
 //TODO: Fix
 renderTextField = "input"
 
-var SimpleForm = (props) => {
+export default (props) => {
   const { handleSubmit, pristine, reset, submitting } = props
   
   return (
@@ -33,18 +33,9 @@ var SimpleForm = (props) => {
             <Field name="password" component={renderTextField} type="password" placeholder="Password"/>
           </div>
           <div>
-            <button type="submit" disabled={false}>Submit</button>
+            <button type="submit" disabled={false}>Save</button>
           </div>
         </div>
     </Form>
   )
 }
-
-SimpleForm = connect(
-    state => ({})
-)(reduxForm({
-    form: 'newServer'
-})(SimpleForm))
-
-
-module.exports = SimpleForm;

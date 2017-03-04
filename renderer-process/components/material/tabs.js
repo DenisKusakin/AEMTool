@@ -1,25 +1,9 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import smartSearchField from "./../../containers/SearchField.js";
-import searchResult from "./../../containers/SearchResult.js";
-import searchButton from "./../../containers/SearchButton.js";
-import {stateTime} from "./../../containers/SearchResult.js";
+import SearchField from "./../../containers/SearchField.js";
+import SearchResult from "./../../containers/SearchResult.js";
+import SearchButton from "./../../containers/SearchButton.js";
 import CodeEditor from "./../code-editor.js";
-const {bundles, components} = remote.require("./main-process/search-api.js");
-
-const searchComponents = (id, searchFunc) => {
-    const SearchField = smartSearchField(id);
-    const SearchResult = searchResult(id);
-    const SearchButton = searchButton(searchFunc)(id);
-
-    return (
-        <div>
-            <SearchField/>
-            <SearchButton/>
-            <SearchResult/>
-        </div>
-    )
-}
 
 const TabsExampleSimple = () => (
     <Tabs>
@@ -27,10 +11,14 @@ const TabsExampleSimple = () => (
             <CodeEditor/>
         </Tab>
         <Tab label="Bundles" >
-            {searchComponents("bundles", bundles)}
+            <SearchField.Bundles/>
+            <SearchButton.Bundles/>
+            <SearchResult.Bundles/>
         </Tab>
         <Tab label="Components" >
-            {searchComponents("components", components)}
+            <SearchField.Components/>
+            <SearchButton.Components/>
+            <SearchResult.Components/>
         </Tab>
     </Tabs>
 );

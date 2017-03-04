@@ -2,12 +2,16 @@ const CHANGE_CHECKBOX_STATE = "CHANGE_CHECKBOX_STATE"
 const CHANGE_FIELD_VALUE = "CHANGE_FIELD_VALUE";
 const ADD_SEARCH_CHUNKS = "ADD_SEARCH_CHUNKS";
 const ADD_SEARCH_CHUNK_RESULT = "ADD_SEARCH_CHUNK_RESULT";
+const START_BUNDLES_SEARCH = "START_BUNDLES_SEARCH";
+const START_COMPONENTS_SEARCH = "START_COMPONENTS_SEARCH";
 
 module.exports = {
     CHANGE_CHECKBOX_STATE,
     CHANGE_FIELD_VALUE,
     ADD_SEARCH_CHUNKS,
-    ADD_SEARCH_CHUNK_RESULT
+    ADD_SEARCH_CHUNK_RESULT,
+    START_BUNDLES_SEARCH,
+    START_COMPONENTS_SEARCH
 }
 
 module.exports.changeCheckboxState = ({searchId, checked, checkboxId}) => ({
@@ -37,3 +41,13 @@ module.exports.addSearchChunkResult = ({searchId, chunkId, items, totalTime, sta
     totalTime,
     stateTime
 })
+
+const startSearch = type => ({searchId, text, servers}) => ({
+    type: type,
+    searchId,
+    text,
+    servers
+})
+
+module.exports.startBundlesSearch = startSearch(START_BUNDLES_SEARCH);
+module.exports.startComponentsSearch = startSearch(START_COMPONENTS_SEARCH);

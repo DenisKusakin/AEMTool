@@ -7,7 +7,7 @@ import {
     SERVER_REMOVE_ERROR,
     SERVER_REMOVED_SUCCESSFULLY,
     SERVERS_FETCHED_ERROR,
-    SERVERS_FETCHED_SUCCEFFULLY,
+    SERVERS_FETCHED_SUCCESSFULLY,
     SERVER_STATUS_UPDATED,
     SERVER_STATUS_UPDATE_ERROR,
     BUNDLES_FETCHED_SUCCESSFULLY,
@@ -34,32 +34,6 @@ var decorator = (func, {resolve, reject}) => args => {
        )
 }
 
-//const _addServer = decorator(addServer, {
-//  resolve: NEW_SERVER_ADDED_SUCCESSFULLY,
-//  reject: ADD_SERVER_ERROR
-//});
-//
-//const _removeServer = decorator(removeServer, {
-//    resolve: SERVER_REMOVED_SUCCESSFULLY,
-//    reject: SERVER_REMOVE_ERROR
-//});
-//
-//const _fetchServers = decorator(fetchServers, {
-//    resolve: SERVERS_FETCHED_SUCCEFFULLY,
-//    reject: SERVERS_FETCHED_ERROR
-//}) ;
-//
-//const _checkServer = decorator(args =>
-//    checkStatus(args)
-//        .then(res => {
-//            res._id = args._id;
-//            return res;
-//        })
-//, {
-//    resolve: SERVER_STATUS_UPDATED,
-//    reject: SERVER_STATUS_UPDATE_ERROR
-//});
-
 const _fetchBundles = decorator(args =>
     fetchBundles(args)
         .then(res => {
@@ -75,12 +49,6 @@ const _startBundle = decorator(args =>{
         let {_id, bundleId} = args;
             console.log(bundleId);
             return startBundle(_id, bundleId)
-//                .then(res => {
-//                    console.log(args);
-//                    res._id = _id;
-//                    res.bundleId = bundleId;
-//                    return res;
-//                })
     },
     {
         resolve: BUNDLE_STARTED_SUCCESSFULLY,
@@ -92,12 +60,6 @@ const _stopBundle = decorator(args =>{
         let {_id, bundleId} = args;
         console.log(_id, bundleId);
         return stopBundle(_id, bundleId)
-//            .then(res => {
-//                console.log(args);
-//                res._id = _id;
-//                res.bundleId = bundleId;
-//                 return res;
-//            })
     },
     {
         resolve: BUNDLE_STOPPED_SUCCESSFULLY,
@@ -106,10 +68,6 @@ const _stopBundle = decorator(args =>{
 );
 
 export default {
-//    addServer: _addServer,
-//    removeServer: _removeServer,
-//    fetchServers: _fetchServers,
-//    checkServer: _checkServer,
     fetchBundles: _fetchBundles,
     startBundle: _startBundle,
     stopBundle: _stopBundle

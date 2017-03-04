@@ -56,6 +56,7 @@ module.exports.showDrawer = () => ({type: SHOW_DRAWER});
 module.exports.hideDrawer = () => ({type: HIDE_DRAWER});
 module.exports.showSearchField = () => ({type: SHOW_SEARCH_FIELD});
 module.exports.hideSearchField = () => ({type: HIDE_SEARCH_FIELD});
+module.exports.fetchServers = () => ({type: FETCH_SERVERS});
 
 module.exports.addBundles = function({_id, data, time}){
     return {

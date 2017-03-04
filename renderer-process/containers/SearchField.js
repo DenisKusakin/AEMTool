@@ -20,4 +20,9 @@ const mapDispatchToProps = searchId => dispatch => ({
     changeFieldValue: value => {dispatch(changeSearchFieldValue({searchId, value}))}
 })
 
-export default searchId => connect(mapStateToProps(searchId), mapDispatchToProps(searchId))(searchField);
+const component = searchId => connect(mapStateToProps(searchId), mapDispatchToProps(searchId))(searchField);
+
+export default {
+    Bundles: component("bundles"),
+    Components: component("components")
+}
