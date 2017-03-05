@@ -4,39 +4,11 @@ import {List, ListItem} from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-import BundleActionButton from './bundle-action-button.js';
 import LastUpdated from './../last-updated.js';
 
-import {startBundle, stopBundle} from "./../../api.js"
-
-const renderItems = (items, _id) => {
-    const renderItem = ({name, symbolicName, stateRaw, id}) => (
-        <ListItem
-              key={name}
-              primaryText={name}
-              rightIconButton ={
-                  <BundleActionButton active={stateRaw === 32}
-                      start={() => startBundle({_id, bundleId: id})}
-                      stop={() => stopBundle({_id, bundleId: id})}
-                  />
-              }
-              secondaryText={symbolicName}/>
-    )
-    return (
-        items.length > 0
-            ?
-            (<List>
-                {items.map(renderItem)}
-            </List>)
-            :
-            (<span>Empty</span>)
-    );
-}
-
-const renderChunk = (totalAmount) => chunk => {
+const renderChunk = (totalAmount, renderItems) => chunk => {
     var style = {
-        width: "" + Math.floor(100 / totalAmount) + "%",
-        //textAlign: 'center',
+        width: "" + Math.floor(100 / (totalAmount > 0 ? totalAmount : 1)) + "%",
         display: 'inline-block'
     };
 
@@ -51,18 +23,8 @@ const renderChunk = (totalAmount) => chunk => {
     );
 }
 
-class SearchResult extends Component {
-    constructor(props){
-        super(props);
-    }
-
-    render() {
-        return (
-            <div>
-                {this.props.chunks.map(renderChunk(this.props.chunks.length))}
-            </div>
-        );
-    }
-}
-
-export default SearchResult;
+export default props => (
+    <div>
+        {props.chunks.map(renderChunk(props.chunks.length, props.renderItems))}
+    </div>
+);

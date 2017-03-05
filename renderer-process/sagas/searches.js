@@ -1,8 +1,19 @@
 import { call, put, takeEvery, takeLatest, take, fork } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
-import {START_BUNDLES_SEARCH, START_COMPONENTS_SEARCH, addSearchChunks, addSearchChunkResult} from "./../actions/search-actions.js"
+import {
+    START_BUNDLES_SEARCH,
+    START_COMPONENTS_SEARCH,
+    BUNDLE_ACTION,
+    COMPONENT_ACTION,
+    addSearchChunks,
+    addSearchChunkResult
+} from "./../actions/search-actions.js"
+
+import {SEARCH_ITEM_ACTION_SUCCEED, SEARCH_ITEM_ACTION_FAILED, SEARCH_ITEM_ACTION_PENDING} from "./../../common/event-types.js"
 
 const {bundles, components} = remote.require("./main-process/search-api.js");
+const {startBundle, stopBundle} = remote.require("./main-process/services-api.js");
+
 const wrapFunc = f => args => f(args).then(response => ({response}), error => ({error}))
 
 function* chunkSearch({searchFunc, searchId, chunkId, query, serverId}) {
@@ -34,9 +45,39 @@ function* startSearch({searchFunc, pattern}) {
     }
 }
 
+function* searchItemAction() {
+    while(true){
+        let {searchId, serverId, itemId, start} = yield take(BUNDLE_ACTION);
+        let actionFunc = start ? startBundle : stopBundle;
+
+        let action = {searchId, chunkId: serverId, itemId};
+
+        yield put({
+            ...action,
+            type: SEARCH_ITEM_ACTION_PENDING
+        });
+
+        let {response, error} = yield call(wrapFunc(actionFunc), {serverId, bundleId: itemId})
+
+        if(response){
+            yield put({
+                ...action,
+                type: SEARCH_ITEM_ACTION_SUCCEED,
+                stateRaw: response.stateRaw
+            })
+        } else{
+            yield put({
+                ...action,
+                type: SEARCH_ITEM_ACTION_FAILED,
+            })
+        }
+    }
+}
+
 export default function* root() {
     yield [
         fork(startSearch, {searchFunc: bundles, pattern: START_BUNDLES_SEARCH}),
-        fork(startSearch, {searchFunc: components, pattern: START_COMPONENTS_SEARCH})
+        fork(startSearch, {searchFunc: components, pattern: START_COMPONENTS_SEARCH}),
+        fork(searchItemAction)
     ]
 }

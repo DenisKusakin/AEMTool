@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import searchField from "./../components/material/search-result.js"
+import BundlesSearchResult from "./../components/material/bundles-search-result.js"
 import lastUpdated from "./../components/last-updated.js"
 
 const mapStateToProps = searchId => state => {
@@ -10,7 +10,7 @@ const mapStateToProps = searchId => state => {
     return {chunks}
 }
 
-const component = searchId => connect(mapStateToProps(searchId))(searchField);
+const component = searchId => connect(mapStateToProps(searchId))(BundlesSearchResult);
 
 export default {
     Bundles: component("bundles"),
