@@ -12,7 +12,7 @@ import {
 import {SEARCH_ITEM_ACTION_SUCCEED, SEARCH_ITEM_ACTION_FAILED, SEARCH_ITEM_ACTION_PENDING} from "./../../common/event-types.js"
 
 const {bundles, components} = remote.require("./main-process/search-api.js");
-const {startBundle, stopBundle} = remote.require("./main-process/services-api.js");
+const {startBundle, stopBundle, startComponent, stopComponent} = remote.require("./main-process/services-api.js");
 
 const wrapFunc = f => args => f(args).then(response => ({response}), error => ({error}))
 
@@ -45,10 +45,10 @@ function* startSearch({searchFunc, pattern}) {
     }
 }
 
-function* searchItemAction() {
+function* searchItemAction({pattern, startService, stopService, itemParamName}) {
     while(true){
-        let {searchId, serverId, itemId, start} = yield take(BUNDLE_ACTION);
-        let actionFunc = start ? startBundle : stopBundle;
+        let {searchId, serverId, itemId, start} = yield take(pattern);
+        let actionFunc = start ? startService : stopService;
 
         let action = {searchId, chunkId: serverId, itemId};
 
@@ -57,13 +57,13 @@ function* searchItemAction() {
             type: SEARCH_ITEM_ACTION_PENDING
         });
 
-        let {response, error} = yield call(wrapFunc(actionFunc), {serverId, bundleId: itemId})
+        let {response, error} = yield call(wrapFunc(actionFunc), {serverId, [itemParamName]: itemId})
 
         if(response){
             yield put({
                 ...action,
                 type: SEARCH_ITEM_ACTION_SUCCEED,
-                stateRaw: response.stateRaw
+                enabled: response.enabled
             })
         } else{
             yield put({
@@ -78,6 +78,18 @@ export default function* root() {
     yield [
         fork(startSearch, {searchFunc: bundles, pattern: START_BUNDLES_SEARCH}),
         fork(startSearch, {searchFunc: components, pattern: START_COMPONENTS_SEARCH}),
-        fork(searchItemAction)
+        fork(
+            searchItemAction,
+            {pattern: BUNDLE_ACTION, startService: startBundle, stopService: stopBundle, itemParamName: "bundleId"}
+        ),
+        fork(
+            searchItemAction,
+            {
+                pattern: COMPONENT_ACTION,
+                startService: startComponent,
+                stopService: stopComponent,
+                itemParamName: "componentId"
+            }
+        )
     ]
 }

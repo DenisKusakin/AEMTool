@@ -64,7 +64,7 @@ export default (state = {}, action) => {
 
         return newState;
     } else if(action.type === SEARCH_ITEM_ACTION_SUCCEED || action.type === SEARCH_ITEM_ACTION_FAILED || action.type === SEARCH_ITEM_ACTION_PENDING) {
-        let {searchId, chunkId, itemId, stateRaw} = action;
+        let {searchId, chunkId, itemId, enabled} = action;
         let chunkIndex = List(state[searchId].result.chunks).findIndex(x => x.id === chunkId);
         let itemIndex = List(state[searchId].result.chunks[chunkIndex].items).findIndex(x => x.id === itemId);
         //TODO: Simplify
@@ -78,7 +78,7 @@ export default (state = {}, action) => {
                     if(action.type === SEARCH_ITEM_ACTION_SUCCEED){
                         return {
                             ...item,
-                            stateRaw,
+                            enabled,
                             isPending: false,
                             actionFailed: false
                         }

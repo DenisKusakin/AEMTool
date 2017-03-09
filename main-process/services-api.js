@@ -1,7 +1,6 @@
 const request = require("request");
 const SLURI = require("sluri");
 const {getEntity, persistEntity, getServer} = require("./db-api.js");
-const isBundlesUpToDate = require("./helpers/expiration-api.js").bundles;
 
 const fetchResource = resource => _id => {
     return getServer(_id)
@@ -18,8 +17,12 @@ const fetchResource = resource => _id => {
                         reject();
                         return;
                     }
-                    let json = JSON.parse(response.body);
-                    resolve({data: json, time: new Date()});
+                    try{
+                        let json = JSON.parse(response.body);
+                        resolve({data: json, time: new Date()});
+                    }catch(e){
+                        reject();
+                    }
                 })
             });
         })
@@ -49,7 +52,7 @@ const fetchResource = resource => _id => {
 //}
 
 //TODO: refactoring
-const bundleAction = action => refresh => ({serverId, bundleId}) => {
+const bundleAction = action => ({serverId, bundleId}) => {
     return getServer(serverId)
         .then(server => {
             let {host, login, password} = server;
@@ -66,8 +69,7 @@ const bundleAction = action => refresh => ({serverId, bundleId}) => {
                         return;
                     }
                     let json = JSON.parse(response.body);
-                    resolve({stateRaw: json.stateRaw});
-                    refresh(serverId);
+                    resolve({enabled: json.stateRaw === 32});
                 })
             });
         })
@@ -89,18 +91,57 @@ const componentAction = action => ({serverId, componentId}) => {
                         reject(error, response);
                         return;
                     }
-                    //let json = JSON.parse(response.body);
-                    resolve();
+                    resolve({
+                        //TODO: This hac is needed because new state is not returned by component action request
+                        enabled: action === "enable"
+                    });
                 })
             });
         })
 }
 
+const fetchComponents = id => fetchResource("/system/console/components")(id)
+    .then ( ({data, time}) => {
+        let transformedList = data.data.map( ( {id, name, state, pid} ) => {
+            return {
+                enabled: state === "active",
+                pid,
+                id: id ? id : name,
+                name
+            }
+        } )
+
+        return {
+            data: {
+                data: transformedList
+            },
+            time
+        }
+    })
+
+const fetchBundles = id => fetchResource("/system/console/bundles")(id)
+    .then ( ( {data, time} ) => {
+        return {
+            data: {
+                data: data.data.map( ( { name, symbolicName, id, stateRaw, version, category, state } ) => ({
+                    name,
+                    symbolicName,
+                    id,
+                    enabled: stateRaw === 32,
+                    version,
+                    category,
+                    state
+                }) )
+            },
+            time
+        }
+    } )
+
 module.exports = {
-    fetchBundles: fetchResource("/system/console/bundles"),
-    startBundle: bundleAction("start")(() => {}),
-    stopBundle: bundleAction("stop")(() => {}),
-    fetchComponents: fetchResource("/system/console/components"),
+    fetchBundles,
+    startBundle: bundleAction("start"),
+    stopBundle: bundleAction("stop"),
+    fetchComponents,
     startComponent: componentAction("enable"),
     stopComponent: componentAction("disable")
 }

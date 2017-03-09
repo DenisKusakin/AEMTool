@@ -15,6 +15,6 @@ const mapDispatchToProps = searchId => ({serverId, componentId}) => dispatch => 
 }
 
 export default ({serverId, componentId, ...rest}) => {
-    let WrappedButton = connect(mapStateToProps, mapDispatchToProps("bundles")({serverId, componentId}))(BundleActionButton)
+    let WrappedButton = connect(mapStateToProps, mapDispatchToProps("components")({serverId, componentId}))(BundleActionButton)
     return <WrappedButton {...rest}/>
 }

@@ -6,23 +6,23 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import LastUpdated from './../last-updated.js';
 import SearchResult from "./search-result.js"
-import BundleActionButton from "./../../containers/BundleActionButton.js"
+import ComponentActionButton from "./../../containers/ComponentActionButton.js"
 
 const renderItems = (items, _id) => {
-    const renderItem = ({name, stateRaw, id, isPending, actionFailed}) => (
+    const renderItem = ({name, id, enabled, isPending, actionFailed}) => (
         <ListItem
               key={name}
               primaryText={name}
               rightIconButton ={
-                  <BundleActionButton
-                      active={stateRaw === 32}
+                  <ComponentActionButton
+                      active={enabled}
                       serverId={_id}
-                      bundleId={id}
+                      componentId={id}
                       isPending={isPending}
                       actionFailed={actionFailed}
                   />
               }
-              secondaryText={symbolicName}/>
+              secondaryText={name}/>
     )
     return (
         items.length > 0
