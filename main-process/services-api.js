@@ -131,7 +131,8 @@ const fetchBundles = id => fetchResource("/system/console/bundles")(id)
                     enabled: stateRaw === 32,
                     version,
                     category,
-                    state
+                    state,
+                    stateRaw
                 }) )
             },
             time
