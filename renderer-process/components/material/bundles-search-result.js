@@ -16,13 +16,10 @@ const renderItems = (items, _id) => {
             <TableRowColumn style={{width: "10%"}}>{id}</TableRowColumn>
             <TableRowColumn style={{width: "55%"}}>
                 <div>
+                    { name }
+                    <br/>
                     <span style={{fontSize: "small"}}>
-                        { name }
-                        <br/>
-                        {symbolicName}
-                    </span>
-                    <span style={{fontSize: "xx-small"}}>
-                        {"-" + version}
+                        { symbolicName } {"-" + version}
                     </span>
                 </div>
             </TableRowColumn>

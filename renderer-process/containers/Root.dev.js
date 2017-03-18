@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import DevTools from './DevTools.js'
 import ServerList from "./ServerList.js"
 import NewServerDialog from "./NewServerDialog.js"
+import Noty, {showNotification} from "./../components/material/notifications.js"
 import AppBar from 'material-ui/AppBar';
 
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
@@ -18,6 +19,7 @@ import Paper from 'material-ui/Paper';
 class Root extends React.Component{
   constructor(props){
     super(props);
+    showNotification({});
   }
 
   render(){
@@ -29,11 +31,13 @@ class Root extends React.Component{
                     <AppBar title="AEM Tool" onLeftIconButtonTouchTap={ () => store.dispatch(showDrawer())}>
 
                     </AppBar>
+
                     <Tabs/>
                     <Drawer>
                         <ServerList/>
                     </Drawer>
                     <NewServerDialog/>
+                    <Noty/>
                     <DevTools/>
                 </div>
             {/*</MuiThemeProvider>*/}

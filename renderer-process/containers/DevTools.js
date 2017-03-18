@@ -8,6 +8,7 @@ export default createDevTools(
   <FilterMonitor
       blacklist={['SERVER_STATUS_UPDATED']}>
       <DockMonitor toggleVisibilityKey="ctrl-h"
+                   defaultIsVisible={false}
                    changePositionKey="ctrl-w">
         <LogMonitor />
       </DockMonitor>

@@ -107,7 +107,8 @@ const fetchComponents = id => fetchResource("/system/console/components")(id)
                 enabled: state === "active",
                 pid,
                 id: id ? id : name,
-                name
+                name,
+                state
             }
         } )
 

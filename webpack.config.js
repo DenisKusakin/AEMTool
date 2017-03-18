@@ -10,6 +10,8 @@ output: {
 },
 devServer: {
   contentBase: './public',
+  inline: true,
+  hot: true,
   publicPath: 'http://localhost:8080/built/'
 },
 module: {
